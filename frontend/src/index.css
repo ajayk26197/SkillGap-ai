@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brand palette from #5b4a2c */
+:root {
+  --brand-50:  #fdf6ec;
+  --brand-100: #f5e2c0;
+  --brand-200: #e8c48a;
+  --brand-300: #d4a35a;
+  --brand-400: #c4893a;
+  --brand-500: #5b4a2c;
+  --brand-600: #4a3b22;
+  --brand-700: #3a2d1a;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #131314;
+    color: #f1f5f9;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #24252b; }
+  ::-webkit-scrollbar-thumb { background: #c4893a; border-radius: 4px; }
+}
+
+@layer components {
+  .glass {
+    @apply bg-[#24252b]/95 backdrop-blur-md border border-white/10;
+  }
+  .gradient-text {
+    background: linear-gradient(90deg, #e8c48a 0%, #c4893a 50%, #d4a35a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: brightness(1.2);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #c4893a 0%, #5b4a2c 100%);
+    @apply text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200
+           shadow-lg disabled:opacity-50 disabled:cursor-not-allowed active:scale-95;
+    box-shadow: 0 4px 20px rgba(196, 137, 58, 0.3);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #d4a35a 0%, #7a6340 100%);
+    box-shadow: 0 4px 24px rgba(196, 137, 58, 0.45);
+  }
+  .btn-secondary {
+    @apply bg-white/10 hover:bg-white/20 text-white font-medium py-2.5 px-5 rounded-xl
+           border border-white/20 transition-all duration-200 active:scale-95;
+  }
+  .input-field {
+    @apply w-full bg-[#1b1c21] border border-white/10 rounded-xl px-4 py-3 text-white
+           placeholder-slate-400 focus:outline-none
+           focus:border-transparent transition-all duration-200;
+    box-shadow: none;
+  }
+  .input-field:focus {
+    border-color: #c4893a;
+    box-shadow: 0 0 0 2px rgba(196, 137, 58, 0.25);
+  }
+  .card {
+    @apply bg-[#24252b] border border-white/10 rounded-2xl p-6 shadow-xl;
+  }
+  .skill-matched {
+    @apply inline-flex items-center gap-1.5 bg-emerald-500/15 text-emerald-400
+           border border-emerald-500/30 text-sm font-medium px-3 py-1.5 rounded-full;
+  }
+  .skill-missing {
+    @apply inline-flex items-center gap-1.5 bg-rose-500/15 text-rose-400
+           border border-rose-500/30 text-sm font-medium px-3 py-1.5 rounded-full;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "skillgap-ai",
+  "version": "1.0.0",
+  "description": "SkillGap AI - Resume vs Job Description Matcher",
+  "scripts": {
+    "predev": "lsof -ti:5001,3000 | xargs kill -9 2>/dev/null; echo '🧹 Ports cleared'",
+    "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"PORT=5001 npm run dev --prefix backend\" \"npm start --prefix frontend\"",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "start:backend": "PORT=5001 npm run dev --prefix backend",
+    "start:frontend": "npm start --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
