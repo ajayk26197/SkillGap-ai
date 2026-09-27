@@ -2,7 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 
-const BACKEND_URL = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5001';
+// In production (Vercel): REACT_APP_API_URL=/api → same domain, use relative path
+// In local dev: REACT_APP_API_URL=http://localhost:5001/api → extract base
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const BACKEND_URL = API_URL.startsWith('http') ? API_URL.replace('/api', '') : '';
 
 export default function Login() {
   const [searchParams] = useSearchParams();
