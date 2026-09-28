@@ -2,7 +2,9 @@
 # NEVER commit .env files — they contain real secrets
 .env
 .env.local
-.env.production
+# .env.production is intentionally NOT ignored for frontend — it only contains
+# the safe relative API path (REACT_APP_API_URL=/api) needed at build time.
+# backend/.env.production (with real secrets) is covered by backend/.gitignore
 .env.development.local
 .env.test.local
 .env.production.local
