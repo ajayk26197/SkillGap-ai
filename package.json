@@ -6,6 +6,7 @@
     "predev": "lsof -ti:5001,3000 | xargs kill -9 2>/dev/null; echo '🧹 Ports cleared'",
     "dev": "concurrently --names \"BACKEND,FRONTEND\" --prefix-colors \"cyan,magenta\" \"PORT=5001 npm run dev --prefix backend\" \"npm start --prefix frontend\"",
     "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "build": "npm run install:all && npm run build --prefix frontend",
     "start:backend": "PORT=5001 npm run dev --prefix backend",
     "start:frontend": "npm start --prefix frontend"
   },

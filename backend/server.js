@@ -12,6 +12,16 @@ connectDB();
 const app = express();
 const isProd = process.env.NODE_ENV === 'production';
 
+// Ensure DB connected for serverless invocations
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('Database connection middleware error:', err);
+  }
+  next();
+});
+
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 // In production: frontend & backend are on the same Vercel domain → same-origin,
 // no CORS needed for /api calls. We still need CORS for any external callers.

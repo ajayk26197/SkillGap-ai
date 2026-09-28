@@ -17,18 +17,23 @@ router.get('/me', protect, getMe);
 
 // ─── Google OAuth ─────────────────────────────────────────────────────────────
 // Step 1: Redirect user to Google's consent screen
-router.get(
-  '/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+router.get('/google', (req, res, next) => {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    return res.status(503).json({ error: 'Google OAuth is not configured on this server.' });
+  }
+  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+});
 
 // Step 2: Google redirects back here after user grants permission
-router.get(
-  '/google/callback',
+router.get('/google/callback', (req, res, next) => {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    return res.redirect(`${FRONTEND_URL}/login?error=google_not_configured`);
+  }
   passport.authenticate('google', {
     failureRedirect: `${FRONTEND_URL}/login?error=google_failed`,
     session: true,
-  }),
+  })(req, res, next);
+},
   (req, res) => {
     // Issue a JWT and pass user data to the frontend via URL params
     const token = generateToken(req.user._id);
