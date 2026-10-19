@@ -2,8 +2,14 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Models to try in order if one is unavailable
-const MODEL_FALLBACKS = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+// Models to try in order if one is unavailable or busy
+const MODEL_FALLBACKS = [
+  'gemini-3.5-flash',
+  'gemini-3.7-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.8-flash',
+  'gemini-flash-latest',
+];
 
 const PROMPT = (resumeText, jobDescription) => `You are an expert HR applicant tracking system (ATS) semantic parser.
 Analyze the candidate's resume against the job description.
@@ -34,7 +40,9 @@ const withRetry = async (fn, maxRetries = 3, delayMs = 1000) => {
         err.message?.includes('503') ||
         err.message?.includes('Service Unavailable') ||
         err.message?.includes('overloaded') ||
-        err.message?.includes('high demand');
+        err.message?.includes('high demand') ||
+        err.message?.includes('429') ||
+        err.message?.includes('RESOURCE_EXHAUSTED');
 
       if (isRetryable && attempt < maxRetries) {
         console.warn(`⚠️ Gemini busy (attempt ${attempt}/${maxRetries}), retrying in ${delayMs}ms...`);
@@ -49,6 +57,12 @@ const withRetry = async (fn, maxRetries = 3, delayMs = 1000) => {
 
 // ─── Core AI processing function called by the match controller ───────────────
 const runAiMatch = async (extractedResumeText, jobDescription) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY is not configured on the server. Please set it in your environment variables.');
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
   const prompt = PROMPT(extractedResumeText, jobDescription);
   let lastError;
 
@@ -64,7 +78,15 @@ const runAiMatch = async (extractedResumeText, jobDescription) => {
         });
 
         const result = await model.generateContent(prompt);
-        const text = result.response.text();
+        let text = result.response.text().trim();
+
+        // Strip markdown fences if returned
+        if (text.startsWith('```json')) {
+          text = text.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+        } else if (text.startsWith('```')) {
+          text = text.replace(/^```\s*/, '').replace(/\s*```$/, '');
+        }
+
         return JSON.parse(text);
       });
 

@@ -57,7 +57,10 @@ const analyzeResume = async (req, res) => {
     });
   } catch (err) {
     console.error('❌ Analysis error:', err);
-    res.status(500).json({ error: err.message || 'Analysis failed. Please try again.' });
+    const errorMessage = typeof err === 'string'
+      ? err
+      : (err?.message || 'Analysis failed. Please try again.');
+    res.status(500).json({ error: errorMessage });
   }
 };
 

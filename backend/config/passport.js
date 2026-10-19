@@ -40,7 +40,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
       } catch (err) {
         return done(err, null);
       }
-    }
+    })
   );
 } else {
   console.warn('⚠️ Google OAuth disabled: GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET not set.');

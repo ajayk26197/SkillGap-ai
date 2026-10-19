@@ -75,6 +75,13 @@ app.get('/api/health', (req, res) => {
     message: '✅ SkillGap AI Backend is running',
     env: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString(),
+    config: {
+      hasGeminiKey: !!process.env.GEMINI_API_KEY,
+      geminiKeyPrefix: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.slice(0, 6) + '...' : 'NOT_SET',
+      hasMongoUri: !!process.env.MONGODB_URI,
+      hasJwtSecret: !!process.env.JWT_SECRET,
+      hasSessionSecret: !!process.env.SESSION_SECRET,
+    },
   });
 });
 

@@ -32,7 +32,22 @@ export default function Home() {
       });
       setResult(data);
     } catch (err) {
-      setError(err.response?.data?.error || 'Analysis failed. Please try again.');
+      console.error('Analysis error:', err);
+      const apiErr = err.response?.data?.error;
+      const apiMsg = err.response?.data?.message;
+      let displayError = 'Analysis failed. Please try again.';
+
+      if (typeof apiErr === 'string') {
+        displayError = apiErr;
+      } else if (apiErr && typeof apiErr === 'object') {
+        displayError = apiErr.message || apiErr.code || JSON.stringify(apiErr);
+      } else if (typeof apiMsg === 'string') {
+        displayError = apiMsg;
+      } else if (err.message) {
+        displayError = err.message;
+      }
+
+      setError(displayError);
     } finally {
       setLoading(false);
     }
